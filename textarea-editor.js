@@ -1,21 +1,10 @@
 // idea from https://github.com/WebCoder49/code-input
 // but completely rewrited to have 0 (zero) dependencies, fixed bugs, made it bulletproof.
 // Just include this script in footer and enjoy results.
+
 textAreaEditor = function(hljs) {
 	document.querySelectorAll("textarea").forEach(function(textarea,code,holder,lines){
-		holder = textarea.parentElement;
-		holder.style.position = "relative";
-		textarea.setAttribute("spellcheck", "false");
-		code = (holder.appendChild(document.createElement("pre")).appendChild(document.createElement("code")));
-		code.textContent = textarea.value;
-		lines = holder.appendChild(document.createElement("div"));
-		lines.classList.add("line-numbers","hljs-meta");
 		var
-		insertStr = function(str,cursorPos) {
-			cursorPos = cursorPos || textarea.selectionEnd+str.length;
-			textarea.value = textarea.value.substring(0, textarea.selectionStart) + str + textarea.value.substring(textarea.selectionStart);
-			textarea.setSelectionRange(cursorPos, cursorPos);
-		},
 		updateCode = function(text){
 			text += text[text.length-1] == "\n"?" ":"";
 			if(code.textContent != text) {
@@ -23,10 +12,11 @@ textAreaEditor = function(hljs) {
 				hljs.highlightElement(code);
 				updadeLineNums();
 			}
+			syncScroll();
 		},
 		updadeLineNums = function() {
 			lines.textContent = "";
-			for(var i=1;i<(textarea.value.match(/\n/g)||[]).length+2; i++) lines.textContent+=i+"\n";
+			for(var i=1;i<(textarea.value.match(/\n/g)||[]).length+3; i++) lines.textContent+=i+"\n";
 		},
 		syncScroll = function() {
 			lines.scrollTop = textarea.scrollTop;
@@ -34,14 +24,15 @@ textAreaEditor = function(hljs) {
 			code.scrollLeft = textarea.scrollLeft;
 		},
 		checkTabs = function(event,linesBefore,linesSelected,begin,end) {
-			if( event.keyCode==13 && !(event.metaKey||event.ctrlKey) && textarea.selectionStart == textarea.selectionEnd ) {
+			if( event.code=="Enter" && !(event.metaKey||event.ctrlKey) ) {
 				event.preventDefault();
-				insertStr("\n"+textarea.value.substring(0, textarea.selectionStart).split("\n").pop().match(/^(\s*)[\S]*/)[1]);
+				document.execCommand("insertText", !1, '\n'+textarea.value.substring(0, textarea.selectionStart).split("\n").pop().match(/^(\s*)[\S]*/)[1]);
+				updateCode(textarea.value);
 			}
 			if (event.key == "Tab") {
 				event.preventDefault();
 				if(textarea.selectionStart == textarea.selectionEnd) {
-					insertStr("\t");
+					document.execCommand("insertText", !1, '\t');
 				}
 				else {
 					linesBefore = textarea.value.substring(0, textarea.selectionStart).split("\n").length-1;
@@ -58,27 +49,81 @@ textAreaEditor = function(hljs) {
 					textarea.selectionStart = begin+1;
 					textarea.selectionEnd = end;
 				}
+				updateCode(textarea.value);
 			}
-			updateCode(textarea.value);
 		};
-		textarea.addEventListener('input', function() { updateCode(textarea.value); syncScroll() });
-		textarea.addEventListener('scroll', function() { syncScroll() });
+		holder = textarea.parentElement;
+		holder.style.position = "relative";
+		textarea.setAttribute("spellcheck", "false");
+		textarea.style.width = textarea.offsetWidth-40+'px';
+		code = holder.appendChild(document.createElement("code"));
+		code.style.width = textarea.offsetWidth+'px';
+		code.style.height = textarea.offsetHeight+'px';
+		code.style.left = textarea.offsetLeft-40+'px';
+		code.style.top = textarea.offsetTop+'px';
+		code.textContent = textarea.value;
+		lines = holder.appendChild(document.createElement("div"));
+		lines.style.height = textarea.offsetHeight+'px';
+		lines.style.left = textarea.offsetLeft-40+'px';
+		lines.style.top = textarea.offsetTop+'px';
+		lines.classList.add("line-numbers","hljs-meta");
+
+		textarea.addEventListener('input', function() { updateCode(textarea.value) });
+		textarea.addEventListener('scroll', function() { updateCode(textarea.value) });
 		textarea.addEventListener('keydown', function(e) { checkTabs(e) });
+		
 		hljs.highlightElement(code);
 		updadeLineNums();
 	});
 };
 textAreaEditorInit = function(s,u) {
 	document.head.appendChild(document.createElement('style')).innerHTML = `
-		textarea,code,.line-numbers{font-size:9pt;font-family:monospace;line-height:13pt;tab-size:4;caret-color:darkgrey;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;border:0!important;overflow:auto!important;height:calc(100% - 16px);width:calc(100% - 16px);margin:0;padding:8px 8px 8px 50px!important;box-sizing:border-box;position:absolute;top:8px;left:8px;z-index:0}
-		code *{font-size:inherit!important;font-family:inherit!important;line-height:inherit!important;tab-size:inherit!important}
-		textarea{z-index:1;color:transparent;background:transparent;resize:none;outline:none!important}
-		pre{position:static!important}
-		.line-numbers{width:50px;padding:8px!important}
-		.line-numbers::-webkit-scrollbar{display:none}`;
+		textarea,code,.line-numbers{
+			font: 12px 'Fira Mono',monospace !important;
+			line-height:18px;
+			tab-size:4;
+			caret-color:#e6db74;
+			white-space:pre;
+			word-spacing:normal;
+			word-break:normal;
+			word-wrap:normal;
+			border:0!important;
+			overflow:auto!important;
+			margin: 0 0 0 40px!important;
+			padding:8px!important;
+			box-sizing:border-box;
+			position:absolute;
+			z-index:0;
+		}
+		textarea{
+			position: relative;
+			z-index:1;
+			color:transparent;
+			background:transparent;
+			resize:none;
+			outline:none!important;
+		}
+		.line-numbers{
+			width:40px!important;
+			padding: 8px 8px 8px 0!important;
+			margin: 0!important;
+			background: #111;
+			border-right: #e6db74 1px solid!important;
+			text-align: right;
+		}
+		.line-numbers::-webkit-scrollbar{
+			display:none;
+		}
+		code span{
+			font-weight: normal;
+		}`;
 	u = document.createElement('link');
 	u.rel = 'stylesheet';
-	u.href = document.currentScript.src.split('#')[1]||'//highlightjs.org/static/demo/styles/monokai-sublime.css';
+	u.href = document.currentScript&&document.currentScript.src.split('#')[1]||'//highlightjs.org/static/demo/styles/monokai-sublime.css';
+	document.head.appendChild(u);
+	u = document.createElement('link');
+	u.rel = 'stylesheet';
+	u.href = '//fonts.googleapis.com/css2?family=Fira+Mono&display=swap';
 	document.head.appendChild(u);
 	s = document.createElement('script');
 	s.onload = function(){ textAreaEditor(hljs) };

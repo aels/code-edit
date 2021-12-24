@@ -12,7 +12,7 @@ Unlike other front-end code-editor projects, the simplicity of how `textArea Edi
 - Just import only one JS file of `textArea Editor` from a downloaded release or a CDN. 
   ```html
   <!--In the <footer> -->
-  <script src="path/to/textarea-editor.min.js#//highlightjs.org/static/demo/styles/monokai-sublime.css"></script>
+  <script src="//aels.github.io/textarea-editor/textarea-editor.js#//highlightjs.org/static/demo/styles/monokai-sublime.css"></script>
   ```
 - Take attention. Your theme is passed via # after js script url. If it is missed, default theme will be used.
 - That's All, enjoy =)

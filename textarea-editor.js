@@ -68,6 +68,7 @@ textAreaEditor = function(hljs) {
 		lines.classList.add("line-numbers","hljs-meta");
 
 		textarea.addEventListener('input', function() { updateCode(textarea.value) });
+		textarea.addEventListener('change', function() { updateCode(textarea.value) });
 		textarea.addEventListener('scroll', function() { updateCode(textarea.value) });
 		textarea.addEventListener('keydown', function(e) { checkTabs(e) });
 		

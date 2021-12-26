@@ -11,7 +11,6 @@ textAreaEditor = function(hljs) {
 				code.textContent = text;
 				hljs.highlightElement(code);
 				updadeLineNums();
-				code.style.top = textarea.offsetTop+'px';
 			}
 			syncScroll();
 		},
@@ -54,7 +53,8 @@ textAreaEditor = function(hljs) {
 			}
 		};
 		holder = textarea.parentElement;
-		holder.style.position = "relative";
+		holder.style.position = "relative!important";
+		holder.style.display = "block!important";
 		textarea.spellcheck = false;
 		textarea.style.width = textarea.offsetWidth-40+'px';
 		[code,lines] = ['code','div'].map(function(a,el){

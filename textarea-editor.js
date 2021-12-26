@@ -56,11 +56,13 @@ textAreaEditor = function(hljs) {
 		holder.style.position = "relative";
 		textarea.setAttribute("spellcheck", "false");
 		textarea.style.width = textarea.offsetWidth-40+'px';
-		code = holder.appendChild(document.createElement("code"));
-		code.style.width = textarea.offsetWidth+'px';
-		code.style.height = textarea.offsetHeight+'px';
-		code.style.left = textarea.offsetLeft-40+'px';
-		code.style.top = textarea.offsetTop+'px';
+		wrapper = holder.appendChild(document.createElement("div"));
+		wrapper.classList.add("code-wrapper");
+		wrapper.style.width = textarea.offsetWidth+'px';
+		wrapper.style.height = textarea.offsetHeight+'px';
+		wrapper.style.left = textarea.offsetLeft-40+'px';
+		wrapper.style.top = textarea.offsetTop+'px';
+		code = wrapper.appendChild(document.createElement("code"));
 		code.textContent = textarea.value;
 		lines = holder.appendChild(document.createElement("div"));
 		lines.style.height = textarea.offsetHeight+'px';
@@ -78,7 +80,7 @@ textAreaEditor = function(hljs) {
 };
 textAreaEditorInit = function(s,u) {
 	document.head.appendChild(document.createElement('style')).innerHTML = `
-		textarea,code,.line-numbers{
+		textarea,code,.code-wrapper,.line-numbers{
 			font: 12px 'Fira Mono',monospace !important;
 			line-height:18px;
 			tab-size:4;
@@ -102,6 +104,14 @@ textAreaEditorInit = function(s,u) {
 			background:transparent;
 			resize:none;
 			outline:none!important;
+		}
+		.code-wrapper{
+			padding:0!important;
+		}
+		code{
+			width:100%!important;
+			height:100%!important;
+			margin:0!important;
 		}
 		.line-numbers{
 			width:40px!important;

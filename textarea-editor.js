@@ -11,7 +11,7 @@ textAreaEditor = function(hljs) {
 				code.textContent = text;
 				hljs.highlightElement(code);
 				updadeLineNums();
-				code.style.position = "absolute";
+				code.style.top = textarea.offsetTop+'px';
 			}
 			syncScroll();
 		},

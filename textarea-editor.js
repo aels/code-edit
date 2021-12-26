@@ -11,6 +11,7 @@ textAreaEditor = function(hljs) {
 				code.textContent = text;
 				hljs.highlightElement(code);
 				updadeLineNums();
+				code.style.position = "absolute";
 			}
 			syncScroll();
 		},
@@ -54,20 +55,17 @@ textAreaEditor = function(hljs) {
 		};
 		holder = textarea.parentElement;
 		holder.style.position = "relative";
-		textarea.setAttribute("spellcheck", "false");
+		textarea.spellcheck = false;
 		textarea.style.width = textarea.offsetWidth-40+'px';
-		wrapper = holder.appendChild(document.createElement("div"));
-		wrapper.classList.add("code-wrapper");
-		wrapper.style.width = textarea.offsetWidth+'px';
-		wrapper.style.height = textarea.offsetHeight+'px';
-		wrapper.style.left = textarea.offsetLeft-40+'px';
-		wrapper.style.top = textarea.offsetTop+'px';
-		code = wrapper.appendChild(document.createElement("code"));
+		[code,lines] = ['code','div'].map(function(a,el){
+			el = holder.appendChild(document.createElement(a));
+			el.style.width = textarea.offsetWidth+'px';
+			el.style.height = textarea.offsetHeight+'px';
+			el.style.left = textarea.offsetLeft-40+'px';
+			el.style.top = textarea.offsetTop+'px';
+			return el;
+		});
 		code.textContent = textarea.value;
-		lines = holder.appendChild(document.createElement("div"));
-		lines.style.height = textarea.offsetHeight+'px';
-		lines.style.left = textarea.offsetLeft-40+'px';
-		lines.style.top = textarea.offsetTop+'px';
 		lines.classList.add("line-numbers","hljs-meta");
 
 		textarea.addEventListener('input', function() { updateCode(textarea.value) });
@@ -80,7 +78,7 @@ textAreaEditor = function(hljs) {
 };
 textAreaEditorInit = function(s,u) {
 	document.head.appendChild(document.createElement('style')).innerHTML = `
-		textarea,code,.code-wrapper,.line-numbers{
+		textarea,code,.line-numbers{
 			font: 12px 'Fira Mono',monospace !important;
 			line-height:18px;
 			tab-size:4;
@@ -104,14 +102,6 @@ textAreaEditorInit = function(s,u) {
 			background:transparent;
 			resize:none;
 			outline:none!important;
-		}
-		.code-wrapper{
-			padding:0!important;
-		}
-		code{
-			width:100%!important;
-			height:100%!important;
-			margin:0!important;
 		}
 		.line-numbers{
 			width:40px!important;

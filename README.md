@@ -1,6 +1,5 @@
 # textArea Editor
-> ___Fully customisable syntax-highlighted textareas.___
-
+![image](https://user-images.githubusercontent.com/1212294/149636129-49953fc8-6225-4872-b421-6d71fd7b3cb7.png)
 ## What does it do?
 **`textArea Editor`** lets you **turn any ordinary JavaScript syntax-highlighting theme and program into customisable syntax-highlighted textareas** using an HTML `<textarea>` element. It uses vanilla CSS to superimpose a `textarea`, then handles indentations, scrolling and fixes any resulting bugs with JavaScript.
 

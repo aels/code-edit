@@ -2,7 +2,7 @@
 // but completely rewrited to have 0 (zero) dependencies, fixed bugs, made it bulletproof.
 // Just include this script in footer and enjoy results.
 
-textAreaEditor = function(hljs) {
+codeEdit = function(hljs) {
 	document.querySelectorAll("textarea").forEach(function(textarea,code,holder,lines){
 		var
 		updateCode = function(text){
@@ -76,7 +76,7 @@ textAreaEditor = function(hljs) {
 		updadeLineNums();
 	});
 };
-textAreaEditorInit = function(s,u) {
+codeEditInit = function(s,u) {
 	document.head.appendChild(document.createElement('style')).innerHTML = `
 		textarea,code,.line-numbers{
 			font: 12px 'Fira Mono',monospace !important;
@@ -126,8 +126,8 @@ textAreaEditorInit = function(s,u) {
 	u.href = '//fonts.googleapis.com/css2?family=Fira+Mono&display=swap';
 	document.head.appendChild(u);
 	s = document.createElement('script');
-	s.onload = function(){ textAreaEditor(hljs) };
+	s.onload = function(){ codeEdit(hljs) };
 	s.src = '//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js';
 	document.head.appendChild(s);
 };
-textAreaEditorInit();
+codeEditInit();
